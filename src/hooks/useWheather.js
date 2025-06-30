@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const useWeather = () => {
   const [weather, setWeather] = useState(null);
@@ -15,28 +15,20 @@ const useWeather = () => {
       );
       const data = await response.json();
       
-      console.log('API Response:', data);
-      
       if (response.ok && data.cod === 200) {
         setWeather(data);
         setError(null);
       } else {
-        console.error('API Error:', data);
         setError(data.message || "City not found! Please check the city name.");
         setWeather(null);
       }
     } catch (err) {
-      console.error('Network Error:', err);
       setError("Network error. Please check your internet connection.");
       setWeather(null);
     } finally {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchWeather("Jammu"); 
-  }, []);
 
   return {
     weather,
