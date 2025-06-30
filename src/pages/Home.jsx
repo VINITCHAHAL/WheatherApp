@@ -2,11 +2,13 @@ import React, { useEffect, useState, useMemo } from "react";
 import useWeather from "../hooks/useWheather";
 import SearchBar from "../components/SearchBar";
 import WeatherCard from "../components/WheatherCard";
+import MarsWeather from "../components/MarsWeather";
 import "../styles/global.css";
 
 const Home = () => {
-  const { weather, loading, error, fetchWeather } = useWeather();
+  const { weather, loading, error, fetchWeather, fetchWeatherByLocation } = useWeather();
   const [particles, setParticles] = useState([]);
+  const [showMarsWeather, setShowMarsWeather] = useState(false);
 
   const memoizedParticles = useMemo(() => {
     const newParticles = [];
@@ -28,6 +30,10 @@ const Home = () => {
 
   const handleSearch = (cityName) => {
     fetchWeather(cityName);
+  };
+
+  const handleLocationWeather = () => {
+    fetchWeatherByLocation();
   };
 
   return (
@@ -68,16 +74,17 @@ const Home = () => {
               🌌 <span className="font-bold">REAL-TIME</span> Atmospheric Intelligence 🌌
             </p>
             <p className="text-xs md:text-sm text-white/70 font-medium mt-2 mb-0">
-              Explore weather patterns across the globe
+              Explore weather patterns across Earth and Mars
             </p>
           </div>
         </div>
 
         <div className="flex justify-center gap-6 mb-12 flex-wrap fade-in" style={{ animationDelay: "0.3s" }}>
           {[
-            { icon: "🛰️", text: "Satellite Data", color: "#ff6b35" },
-            { icon: "⚡", text: "Instant Results", color: "#ffd23f" },
-            { icon: "🌍", text: "Global Coverage", color: "#06ffa5" },
+            { icon: "🛰️", text: "NASA Data", color: "#ff6b35" },
+            { icon: "🎯", text: "High Accuracy", color: "#ffd23f" },
+            { icon: "🌍", text: "Earth & Mars", color: "#06ffa5" },
+            { icon: "📍", text: "GPS Precision", color: "#8b5cf6" },
           ].map((badge, index) => (
             <div
               key={index}
@@ -97,6 +104,21 @@ const Home = () => {
           ))}
         </div>
 
+        <div className="flex justify-center gap-4 mb-8 flex-wrap fade-in" style={{ animationDelay: "0.4s" }}>
+          <button
+            onClick={handleLocationWeather}
+            className="bg-blue-500/20 hover:bg-blue-500/30 text-white font-semibold py-3 px-6 rounded-2xl border border-blue-500/50 transition-all duration-300 backdrop-blur-md hover:scale-105"
+          >
+            📍 Use My Location (High Accuracy)
+          </button>
+          <button
+            onClick={() => setShowMarsWeather(!showMarsWeather)}
+            className="bg-red-500/20 hover:bg-red-500/30 text-white font-semibold py-3 px-6 rounded-2xl border border-red-500/50 transition-all duration-300 backdrop-blur-md hover:scale-105"
+          >
+            🚀 {showMarsWeather ? 'Hide' : 'Show'} Mars Weather
+          </button>
+        </div>
+
         <div className="relative mb-12 fade-in" style={{ animationDelay: "0.6s" }}>
           <SearchBar onSearch={handleSearch} />
         </div>
@@ -105,13 +127,20 @@ const Home = () => {
           <WeatherCard weather={weather} loading={loading} error={error} />
         </div>
 
+        {showMarsWeather && (
+          <div className="mt-8 fade-in" style={{ animationDelay: "1.0s" }}>
+            <MarsWeather />
+          </div>
+        )}
+
         <div className="mt-16 pb-12 relative fade-in" style={{ animationDelay: "1.2s" }}>
           <div className="bg-white/5 rounded-3xl p-6 backdrop-blur-md border border-white/10 mb-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               {[
                 { label: "Cities Monitored", value: "200,000+", icon: "🏙️" },
-                { label: "Data Points/Hour", value: "1M+", icon: "📊" },
-                { label: "Accuracy Rate", value: "99.9%", icon: "🎯" },
+                { label: "Data Accuracy", value: "99.9%", icon: "🎯" },
+                { label: "NASA Integration", value: "Active", icon: "🛰️" },
+                { label: "GPS Precision", value: "±10m", icon: "📍" },
               ].map((stat, index) => (
                 <div key={index} className="text-center">
                   <div className="text-2xl mb-2">{stat.icon}</div>

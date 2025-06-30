@@ -94,6 +94,24 @@ const WeatherCard = ({ weather, loading, error }) => {
     return descriptions[weatherMain] || "Weather Conditions";
   };
 
+  const getDataQualityColor = (quality) => {
+    switch(quality) {
+      case 'good': return '#4ade80'; 
+      case 'fair': return '#fbbf24'; 
+      case 'poor': return '#f87171'; 
+      default: return '#94a3b8'; 
+    }
+  };
+
+  const getDataQualityText = (quality) => {
+    switch(quality) {
+      case 'good': return 'High Accuracy';
+      case 'fair': return 'Moderate Accuracy';
+      case 'poor': return 'Limited Accuracy';
+      default: return 'Standard Data';
+    }
+  };
+
   return (
     <div className="weather-card-cosmic max-w-2xl mx-auto mt-8 relative fade-in px-2 sm:px-0"
          style={{
@@ -101,6 +119,19 @@ const WeatherCard = ({ weather, loading, error }) => {
          }}>
 
       <div className="relative z-2">
+        {weather.dataQuality && (
+          <div className="absolute top-4 right-4 z-10">
+            <div 
+              className="bg-white/20 backdrop-blur-md rounded-full px-3 py-1 border border-white/30"
+              style={{ borderLeftColor: getDataQualityColor(weather.dataQuality), borderLeftWidth: '3px' }}
+            >
+              <span className="text-white text-xs font-semibold">
+                {getDataQualityText(weather.dataQuality)}
+              </span>
+            </div>
+          </div>
+        )}
+
         <div className="text-center mb-6 md:mb-10">
           <div className="flex flex-col sm:flex-row items-center justify-center mb-4 px-2">
             <div className="flex items-center">
@@ -207,6 +238,27 @@ const WeatherCard = ({ weather, loading, error }) => {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="bg-white/10 rounded-2xl p-4 md:p-6 backdrop-blur-md border border-white/20 mb-6 mx-2 sm:mx-5">
+          <div className="flex justify-between items-center flex-wrap gap-4">
+            <div className="text-left">
+              <p className="text-white/80 text-xs font-semibold uppercase tracking-wide">Data Source</p>
+              <p className="text-white text-sm font-bold">{weather.source || 'OpenWeatherMap'}</p>
+            </div>
+            {weather.locationAccuracy && (
+              <div className="text-center">
+                <p className="text-white/80 text-xs font-semibold uppercase tracking-wide">GPS Accuracy</p>
+                <p className="text-white text-sm font-bold">±{Math.round(weather.locationAccuracy)}m</p>
+              </div>
+            )}
+            <div className="text-right">
+              <p className="text-white/80 text-xs font-semibold uppercase tracking-wide">Last Updated</p>
+              <p className="text-white text-sm font-bold">
+                {weather.lastUpdated ? new Date(weather.lastUpdated).toLocaleTimeString() : new Date().toLocaleTimeString()}
+              </p>
+            </div>
+          </div>
         </div>
 
         <div className="flex justify-between bg-white/10 rounded-2xl p-4 md:p-6 backdrop-blur-md border border-white/20 relative mx-2 sm:mx-5">
